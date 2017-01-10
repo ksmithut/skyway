@@ -1,0 +1,62 @@
+{
+  "name": "skyway",
+  "version": "1.0.0",
+  "description": "An express routing library that leverages swagger (open api) definitions to validate incoming and outgoing data.",
+  "main": "lib/index.js",
+  "scripts": {
+    "pretest": "npm run test:lint",
+    "test": "npm run test:unit",
+    "posttest": "npm run test:coverage",
+    "test:lint": "eslint . --ignore-path=.gitignore",
+    "test:unit": "NODE_ENV=test istanbul cover _mocha",
+    "test:coverage": "istanbul check-coverage",
+    "test:coverage:report": "open coverage/lcov-report/index.html",
+    "test:coverage:codeclimate": "cat ./coverage/lcov.info | codeclimate-test-reporter"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ksmithut/skyway.git"
+  },
+  "keywords": [
+    "swagger",
+    "openapi",
+    "express",
+    "validation"
+  ],
+  "author": "ksmithut",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ksmithut/skyway/issues"
+  },
+  "homepage": "https://github.com/ksmithut/skyway#readme",
+  "eslintConfig": {
+    "extends": [
+      "ksmithut",
+      "ksmithut/node",
+      "ksmithut/es6-node",
+      "ksmithut/mocha"
+    ],
+    "rules": {}
+  },
+  "dependencies": {
+    "bluebird": "^3.4.7",
+    "cors": "^2.8.1",
+    "csv-parse": "^1.1.7",
+    "express": "^4.14.0",
+    "swagger-parser": "^3.4.1"
+  },
+  "devDependencies": {
+    "body-parser": "^1.15.2",
+    "chai": "^3.5.0",
+    "chai-as-promised": "^6.0.0",
+    "chai-spies": "^0.7.1",
+    "codeclimate-test-reporter": "^0.4.0",
+    "eslint": "^3.12.2",
+    "eslint-config-ksmithut": "^2.3.0",
+    "istanbul": "^0.4.5",
+    "mocha": "^3.2.0",
+    "mocha-lcov-reporter": "^1.2.0",
+    "supertest": "^2.0.1",
+    "supertest-as-promised": "^4.0.2"
+  }
+}

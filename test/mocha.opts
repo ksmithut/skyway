@@ -1,0 +1,3 @@
+lib/**/*.spec.js
+--require test/setup/chai
+--reporter spec
