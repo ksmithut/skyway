@@ -217,42 +217,14 @@ associated with each handler.
 
 - Tests. I had some written, but then I changed testing framework I was using.
   Will be making this a priority before any of the other features.
-- You can only strip out entire objects, there is currently not a way to strip
-  out specific properties.
+- You can only strip out entire objects from the public view, there is currently
+  not a way to strip out specific properties.
 - Perhaps speed up csv/collectionFormat parsing. It's fairly fast, but I suspect
   that it can be faster. I'm using a fully fledged csv parsing library, but I
   wonder if `val.split(',')` would be sufficient... I would love to see a
   swagger compliant collectionFormat implementation.
 - Implement the swagger security spec, or at least open it up for the developer
   to implement.
-- Validate on the `consumes:` property. Right now it will pass validation.
-  Perhaps this just takes converting it to a header param validation, but the
-  way consumes gets overridden and the fact that you don't have a consumes on
-  get requests made it not worth it to implement right away. Maybe we should
-  just assume that we should not try to validate the consumes if the body or
-  formData params don't exist, then we just skip that and body parsing
-  altogether
-- Better mimetype matching for the parsers option. I'd like to allow more fuzzy
-  parser options that match multiple `consumes:` types. For example, if you have
-  the following consumes:
-  ```yaml
-  consumes:
-    - application/my.custom.object+json
-    - application/my.other.custom.object+json
-  ```
-  I'd like to just configure the parsers like this:
-  ```js
-  {
-    'application/json': bodyParser.json(),
-  }
-  ```
-  But for now, you have to create a key for each unique content-type like so:
-  ```js
-  {
-    'application/my.custom.object+json': bodyParser.json(),
-    'application/my.other.custom.object+json': bodyParser.json(),
-  }
-  ```
 - formData is not supported. Along with that, file input types are not
   supported... I really want to support this though, but there are so many ways
   to parse a file (storing a temp file somewhere, streaming) and there are use

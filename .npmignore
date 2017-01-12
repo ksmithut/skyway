@@ -1,0 +1,5 @@
+lib/**/*.spec.js
+fixtures
+coverage
+examples
+test

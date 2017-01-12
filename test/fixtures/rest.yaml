@@ -1,0 +1,136 @@
+swagger: '2.0'
+info:
+  title: simple api
+  version: '0.0.0'
+consumes:
+  - application/json
+produces:
+  - application/json
+basePath: /api/v1
+paths:
+  /users:
+    get:
+      parameters:
+        - $ref: '#/parameters/skip'
+        - $ref: '#/parameters/limit'
+        - $ref: '#/parameters/sort'
+        - $ref: '#/parameters/fields'
+      responses:
+        200:
+          description: List of users
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/UserView'
+    post:
+      parameters:
+        - name: body
+          in: body
+          schema:
+            $ref: '#/definitions/UserCreate'
+      responses:
+        201:
+          description: The newly created user
+          schema:
+            $ref: '#/definitions/UserView'
+  /users/{id}:
+    parameters:
+      - name: id
+        in: path
+        description: The user id(s)
+        type: string
+        required: true
+    get:
+      responses:
+        200:
+          description: The user at the given location
+          schema:
+            $ref: '#/definitions/UserView'
+        404:
+          description: The user was not found with that id
+    put:
+      parameters:
+        - name: body
+          in: body
+          schema:
+            $ref: '#/definitions/UserUpdate'
+      responses:
+        200:
+          description: The updated user
+          schema:
+            $ref: '#/definitions/UserView'
+        404:
+          description: The user was not found with that id
+    delete:
+      responses:
+        204:
+          description: Successful deletion
+        404:
+          description: The user was not found with that id
+parameters:
+  skip:
+    name: skip
+    description: Number of items to skip
+    in: query
+    type: integer
+    default: 0
+    minimum: 0
+  limit:
+    name: limit
+    description: Number of results to display
+    in: query
+    type: integer
+    default: 10
+    minimum: 1
+    maximum: 100
+  sort:
+    name: sort
+    description: Fields to sort by. Prefix fields with '-' to sort descending
+    in: query
+    type: array
+    default: []
+    items:
+      type: string
+  fields:
+    name: select
+    description: Fields to return.
+    in: query
+    type: array
+    default: []
+    items:
+      type: string
+definitions:
+  UserView:
+    properties:
+      id:
+        type: string
+      username:
+        type: string
+      createdAt:
+        type: integer
+      updatedAt:
+        type: integer
+      role:
+        type: string
+        enum:
+          - admin
+          - user
+  UserCreate:
+    required:
+      - username
+      - password
+    properties:
+      username:
+        type: string
+      password:
+        type: string
+        format: password
+      role:
+        type: string
+        default: user
+        enum:
+          - admin
+          - user
+  UserUpdate:
+    properties:
+      $ref: '#/definitions/UserCreate/properties'

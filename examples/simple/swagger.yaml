@@ -1,0 +1,29 @@
+swagger: '2.0'
+info:
+  title: test
+  version: '0.0.0'
+consumes:
+  - application/json
+paths:
+  /greet/{name}:
+    get:
+      produces:
+        - text/plain
+      parameters:
+        - name: name
+          in: path
+          type: string
+          required: true
+        - name: nums
+          in: query
+          type: array
+          collectionFormat: csv
+          items:
+            type: integer
+          default: []
+          maxItems: 3
+      responses:
+        200:
+          description: Returns a greeting
+          schema:
+            type: string

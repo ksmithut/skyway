@@ -40,8 +40,7 @@
   },
   "dependencies": {
     "bluebird": "^3.4.7",
-    "cors": "^2.8.1",
-    "csv-parse": "^1.1.7",
+    "csv-parse": "^1.1.9",
     "express": "^4.14.0",
     "swagger-parser": "^3.4.1"
   },
@@ -51,12 +50,11 @@
     "chai-as-promised": "^6.0.0",
     "chai-spies": "^0.7.1",
     "codeclimate-test-reporter": "^0.4.0",
-    "eslint": "^3.12.2",
+    "eslint": "^3.13.1",
     "eslint-config-ksmithut": "^2.3.0",
     "istanbul": "^0.4.5",
     "mocha": "^3.2.0",
     "mocha-lcov-reporter": "^1.2.0",
-    "supertest": "^2.0.1",
-    "supertest-as-promised": "^4.0.2"
+    "supertest": "^2.0.1"
   }
 }
