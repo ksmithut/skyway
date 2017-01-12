@@ -39,7 +39,7 @@
     "rules": {}
   },
   "dependencies": {
-    "ajv": "4.10.4",
+    "ajv": "^4.10.4",
     "bluebird": "^3.4.7",
     "csv-parse": "^1.1.9",
     "express": "^4.14.0",
