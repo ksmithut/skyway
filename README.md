@@ -220,8 +220,6 @@ associated with each handler.
 
 # TODO
 
-- Tests. I had some written, but then I changed testing framework I was using.
-  Will be making this a priority before any of the other features.
 - You can only strip out entire objects from the public view, there is currently
   not a way to strip out specific properties.
 - Perhaps speed up csv/collectionFormat parsing. It's fairly fast, but I suspect
@@ -246,15 +244,3 @@ associated with each handler.
 - Automated CORS implementation. We have a list of all accepted HTTP methods,
   seems pretty trivial to implement cors in here. Just making a note to come
   back to later.
-- The router returned in `api.routes()` is setup asyncronously as it validates
-  the swagger schema asynchronously, so doing something like this:
-  ```js
-  const routes = api.routes({ /* ... */ })
-  routes.use((err, req, res, next) => {
-    // Custom error handler
-    next(err)
-  })
-  ```
-  wouldn't work as expected, which is why you need to pass the error handling
-  middleware as a custom option. The library for validation doesn't have a
-  synchronous option, but there are plans for the future to implement it.
