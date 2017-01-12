@@ -29,6 +29,15 @@
     "url": "https://github.com/ksmithut/skyway/issues"
   },
   "homepage": "https://github.com/ksmithut/skyway#readme",
+  "eslintConfig": {
+    "extends": [
+      "ksmithut",
+      "ksmithut/node",
+      "ksmithut/es6-node",
+      "ksmithut/mocha"
+    ],
+    "rules": {}
+  },
   "dependencies": {
     "bluebird": "^3.4.7",
     "csv-parse": "^1.1.9",
