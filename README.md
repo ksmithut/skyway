@@ -1,6 +1,11 @@
 # skyway
 
-## Not yet released, `npm install` will not work yet. Name may change.
+[![NPM version](http://img.shields.io/npm/v/skyway.svg?style=flat)](https://www.npmjs.org/package/skyway)
+[![Dependency Status](http://img.shields.io/david/ksmithut/skyway.svg?style=flat)](https://david-dm.org/ksmithut/skyway)
+[![Dev Dependency Status](http://img.shields.io/david/dev/ksmithut/skyway.svg?style=flat)](https://david-dm.org/ksmithut/skyway#info=devDependencies&view=table)
+[![Code Climate](http://img.shields.io/codeclimate/github/ksmithut/skyway.svg?style=flat)](https://codeclimate.com/github/ksmithut/skyway)
+[![Build Status](http://img.shields.io/travis/ksmithut/skyway/master.svg?style=flat)](https://travis-ci.org/ksmithut/skyway)
+[![Coverage Status](http://img.shields.io/codeclimate/coverage/github/ksmithut/skyway.svg?style=flat)](https://codeclimate.com/github/ksmithut/skyway)
 
 An express routing library that leverages swagger (open api) definitions to
 validate incoming and outgoing data.
