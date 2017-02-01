@@ -39,23 +39,23 @@
     "rules": {}
   },
   "dependencies": {
-    "ajv": "^4.10.4",
+    "ajv": "^4.11.2",
     "bluebird": "^3.4.7",
-    "csv-parse": "^1.1.9",
-    "express": "^4.14.0",
+    "csv-parse": "^1.2.0",
+    "express": "^4.14.1",
     "swagger-parser": "^3.4.1"
   },
   "devDependencies": {
-    "body-parser": "^1.15.2",
+    "body-parser": "^1.16.0",
     "chai": "^3.5.0",
     "chai-as-promised": "^6.0.0",
     "chai-spies": "^0.7.1",
     "codeclimate-test-reporter": "^0.4.0",
-    "eslint": "^3.13.1",
+    "eslint": "^3.14.1",
     "eslint-config-ksmithut": "^2.3.0",
     "istanbul": "^0.4.5",
     "mocha": "^3.2.0",
     "mocha-lcov-reporter": "^1.2.0",
-    "supertest": "^2.0.1"
+    "supertest": "^3.0.0"
   }
 }
