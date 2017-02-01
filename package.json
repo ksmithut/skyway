@@ -7,11 +7,11 @@
     "pretest": "npm run test:lint",
     "test": "npm run test:unit",
     "posttest": "npm run test:coverage",
-    "test:lint": "eslint . --ignore-path=.gitignore",
-    "test:unit": "NODE_ENV=test istanbul cover _mocha",
-    "test:coverage": "istanbul check-coverage",
+    "test:lint": "./node_modules/.bin/eslint . --ignore-path=.gitignore",
+    "test:unit": "NODE_ENV=test ./node_modules/.bin/istanbul cover _mocha",
+    "test:coverage": "./node_modules/.bin/istanbul check-coverage",
     "test:coverage:report": "open coverage/lcov-report/index.html",
-    "test:coverage:codeclimate": "cat ./coverage/lcov.info | codeclimate-test-reporter"
+    "test:coverage:codeclimate": "cat ./coverage/lcov.info | ./node_modules/.bin/codeclimate-test-reporter"
   },
   "repository": {
     "type": "git",
