@@ -24,8 +24,7 @@ For information on the swagger api, visit the
   errors.
 - Data coercion. Coerces data into compatible data types so that you know you
   have the correct data types before you touch it.
-- Undocumented APIs. Strip out private docs but still continue to validate on
-  them.
+- Private APIs. Strip out private docs but still continue to validate on them.
 - Fail early. It will fail as early as it can before it starts doing heavy
   operations like body parsing and calling your handler.
 
@@ -150,6 +149,13 @@ app.get('/swagger.json', api.docs())
 Returns an express router that has all of the validation/coercion/parsing
 associated with each handler.
 
+- `options.cors` - This is a set of options that you can pass into the
+  [cors](https://www.npmjs.com/package/cors) module. The `methods` option will
+  be configured for you for each endpoint so no need to worry about that. You
+  also pass in overrides for any of the options (besides methods) by using the
+  `x-cors-options` key in your swagger doc at the root level, on the path level,
+  or on the operation (method) level.
+
 - `options.handlers` - This should be an object whose keys are the paths defined
   in your docs, and the values are also objects, whose keys are the methods for
   those paths, and the values of those methods are express middleware (or
@@ -222,10 +228,6 @@ associated with each handler.
 
 - You can only strip out entire objects from the public view, there is currently
   not a way to strip out specific properties.
-- Perhaps speed up csv/collectionFormat parsing. It's fairly fast, but I suspect
-  that it can be faster. I'm using a fully fledged csv parsing library, but I
-  wonder if `val.split(',')` would be sufficient... I would love to see a
-  swagger compliant collectionFormat implementation.
 - Implement the swagger security spec, or at least open it up for the developer
   to implement.
 - formData is not supported. Along with that, file input types are not
@@ -241,6 +243,3 @@ associated with each handler.
   req.query and req.headers get stripped out of the object if they aren't
   defined in the path. There might be a better way to configure this, but
   perhaps just passing an `x-additionalProperties: false` would be sufficient.
-- Automated CORS implementation. We have a list of all accepted HTTP methods,
-  seems pretty trivial to implement cors in here. Just making a note to come
-  back to later.

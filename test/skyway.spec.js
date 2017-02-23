@@ -1,3 +1,5 @@
+/* eslint-disable max-statements */
+
 'use strict'
 
 const path = require('path')
@@ -55,7 +57,7 @@ describe('skyway', () => {
       })
   })
 
-  it.skip('removes properties mentioned in x-private: []')
+  it('removes properties mentioned in x-private: []')
 
   it('rejects when there is an invalid schema', () => {
     const request = createRequest('invalid')
@@ -156,6 +158,30 @@ describe('skyway', () => {
       })
   })
 
+  it('leverages cors', () => {
+    const request = createRequest('rest', {
+      handlers: {
+        '/users': {
+          get: (req, res) => {
+            res.json({})
+          },
+        },
+      },
+      cors: {},
+    })
+    return request
+      .options('/api/v1/users')
+      .expect('access-control-allow-methods', 'GET,POST,OPTIONS')
+      .expect('Allow', 'GET,POST,OPTIONS')
+      .expect(204)
+      .then(() => {
+        return request
+          .put('/api/v1/users')
+          .expect('Allow', 'GET,POST,OPTIONS')
+          .expect(405)
+      })
+  })
+
   describe('data handling', () => {
     // Here is where we will put all custom data handling tests that we have to
     // handle outside of ajv. I won't attempt to write tests for every data type
@@ -242,7 +268,6 @@ describe('skyway', () => {
       })
 
     })
-
 
   })
 
