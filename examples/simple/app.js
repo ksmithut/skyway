@@ -22,16 +22,28 @@ const handlers = {
       res.send(`${greeting} ${numbersMessage}`)
     },
   },
+  '/secure': {
+    get: (req, res) => {
+      res.send('Execute Order 66')
+    },
+  },
 }
 
 const parsers = {
   'application/json': bodyParser.json(),
 }
 
+const security = {
+  basicAuth: (req, creds) => {
+    return creds.user === 'username' && creds.password === 'password'
+  },
+}
+
 app.get('/swagger.json', api.docs())
 app.use(api.routes({
   handlers,
   parsers,
+  security,
 }))
 // AJV error handling
 app.use((err, req, res, next) => {

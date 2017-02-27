@@ -1,4 +1,3 @@
 lib/**/*.spec.js
 test/**/*.spec.js
---require test/setup/chai
 --reporter spec

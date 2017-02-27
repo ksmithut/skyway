@@ -7,9 +7,80 @@ consumes:
 produces:
   - application/json
 basePath: /api/v1
+securityDefinitions:
+  basicAuth:
+    type: basic
+  apiKeyHeader:
+    type: apiKey
+    in: header
+    name: Authorization
+  apiKeyQuery:
+    type: apiKey
+    in: query
+    name: token
+  oauth:
+    type: oauth2
+    flow: implicit
+    authorizationUrl: http://example.com/auth
+    scopes:
+      users:read: Read Users
+      users:write: Write Users
 paths:
+  /health:
+    get:
+      security:
+        - basicAuth: []
+      responses:
+        200:
+          description: Gets health
+          schema:
+            properties:
+              status:
+                type: string
+          examples:
+            application/json:
+              status: ok
+  /health-details:
+    get:
+      security:
+        - apiKeyHeader: []
+        - apiKeyQuery: []
+      responses:
+        200:
+          description: Gets health
+          schema:
+            properties:
+              status:
+                type: string
+          examples:
+            application/json:
+              status: ok
+  /health-check:
+    get:
+      security:
+        - apiKeyHeader: []
+        - apiKeyQuery: []
+      parameters:
+        - name: test
+          in: query
+          type: boolean
+        - name: test
+          in: header
+          type: boolean
+      responses:
+        200:
+          description: Gets health
+          schema:
+            properties:
+              status:
+                type: string
+          examples:
+            application/json:
+              status: ok
   /users:
     get:
+      security:
+        - oauth: [ users:read ]
       parameters:
         - $ref: '#/parameters/skip'
         - $ref: '#/parameters/limit'
@@ -23,6 +94,8 @@ paths:
             items:
               $ref: '#/definitions/UserView'
     post:
+      security:
+        - oauth: [ users:write ]
       parameters:
         - name: body
           in: body
@@ -41,6 +114,8 @@ paths:
         type: string
         required: true
     get:
+      security:
+        - oauth: [ users:read ]
       responses:
         200:
           description: The user at the given location
@@ -49,6 +124,8 @@ paths:
         404:
           description: The user was not found with that id
     put:
+      security:
+        - oauth: [ users:write ]
       parameters:
         - name: body
           in: body
@@ -62,6 +139,8 @@ paths:
         404:
           description: The user was not found with that id
     delete:
+      security:
+        - oauth: [ users:write ]
       responses:
         204:
           description: Successful deletion

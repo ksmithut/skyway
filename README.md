@@ -144,6 +144,25 @@ example:
 app.get('/swagger.json', api.docs())
 ```
 
+## `api.swaggerUi(options)`
+
+This returns middleware to host swagger-ui for local development, or even
+as your documentation website.
+
+example:
+
+```js
+app.get('/docs', api.swaggerUi({
+  swaggerPath: '/swagger.json',
+}))
+```
+
+- `options.swaggerPath` - The path to your public swagger docs. This should be
+  pointing at the path where you have setup `api.docs()`
+- `options.swaggerUiAssets` - The absolute path to a folder where the swagger-ui
+  assets are being hosted. By default, it will pull the version of swagger-ui
+  bundled with skyway.
+
 ## `api.routes(options)`
 
 Returns an express router that has all of the validation/coercion/parsing
@@ -206,6 +225,95 @@ associated with each handler.
     'application/x-www-form-urlencoded': bodyParser.urlencoded(),
   }
   ```
+
+- `options.security` - This should be an object whose keys match up to the keys
+  in your securityDefinitions object in your swagger doc. So if you have the
+  following swagger definition:
+
+  ```yaml
+  swagger: '2.0'
+  info:
+    title: ''
+    version: '0.0.0'
+  securityDefinitions:
+    fooBasicAuth:
+      type: basic
+    barSpecialToken:
+      type: apiKey
+      in: query
+      name: token
+  paths:
+    /health:
+      get:
+        security:
+          - fooBasicAuth: []
+          - barSpecialToken: []
+        responses:
+          200:
+            description: successful response
+  ```
+
+  Then you'll want to implement those in this way:
+
+  ```js
+  app.use(api.routes({
+    handlers: { /* ... */ },
+    security: {
+      fooBasicAuth(req, creds) {
+        // you can return a promise
+        return User
+          .findOne({ username: creds.user })
+          .then((user) => {
+            if (!user) throw new Error('No user with that username')
+            return user.authenticate(creds.password)
+          })
+      },
+      barSpecialToken(req, token) {
+        // Or you can just return a boolean.
+        return token === config.get('specialToken')
+      },
+    },
+  }))
+  ```
+
+  The function signature is different based on the scheme type.
+
+  - `type: basic` - `function(req, { user, password }, definition) { }`
+
+    You get the express request as the first argument, and an object whose
+    properties are `user` and `password`. You will never get an empty argument
+    here, it will always be an object. skyway will break out early if the
+    Authorization header is invalid.
+
+  - `type: apiKey` - `function(req, token, definition)`
+
+    You get the token/apiKey as the second argument in this variation. Again, if
+    there isn't a valid token given in the specified header/query parameter,
+    then skyway will throw an error for you.
+
+  - `type: oauth2` - `function(req, scopes, definition)`
+
+    This variation is much more manual. For this one, you just get the scopes
+    that are defined in the swagger doc. See the swagger spec for more
+    information about oauth2. skyway doesn't make any assumptions about how
+    you've implemented oauth2. It just gives you the request and the definition
+    required. If you need something more complex than this or believe skyway
+    could be doing more heavy lifting, please raise an issue. For the time
+    being, until I can get more oauth2 use cases, I'm going to say that oauth2
+    is officially unsupported, in order to allow breaking changes in this
+    method.
+
+    Current Ideas:
+
+    - Perhaps the method should be to look up a user and return an array of
+      scopes the user has access to.
+    - Maybe a more robust oauth2 framework should plug in here.
+    - More ideas welcome!
+
+  **IMPORTANT** The security handlers run before any of the headers or body get
+  validated. In fact, skyway hasn't even parsed the body yet. If you need the
+  body parsed, you should run a body parser before the skyway `.routes()`
+  middleware.
 
 - `options.errorHandler` - This should be an express middleware. It doesn't
   actually need to be express
