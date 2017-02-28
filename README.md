@@ -87,33 +87,31 @@ const PORT = process.env.PORT || '8000'
 const app = express()
 const api = skyway(path.join(__dirname, 'swagger.yaml'))
 
-const handlers = {
-  '/greet/{name}': {
-    get: (req, res) => {
-      // When your data gets here, req.query.nums is going to be an array of
-      // integers. Coerced and validated before it even gets here.
-      const greeting = `Hello ${req.params.name}.`
-      const favoriteNumbers = req.query.nums.join(', ')
-      const numbersMessage = favoriteNumbers
-        ? `Your favorite numbers are ${favoriteNumbers}.`
-        : 'You have no favorite numbers.'
-      res.send(`${greeting} ${numbersMessage}`)
-    },
-  },
-}
+const router = new express.Router()
+router.get('/greet/:name', (req, res) => {
+  // When your data gets here, req.query.nums is going to be an array of
+  // integers. Coerced and validated before it even gets here.
+  const greeting = `Hello ${req.params.name}.`
+  const favoriteNumbers = req.query.nums.join(', ')
+  const numbersMessage = favoriteNumbers
+    ? `Your favorite numbers are ${favoriteNumbers}.`
+    : 'You have no favorite numbers.'
+  res.send(`${greeting} ${numbersMessage}`)
+})
 
 const parsers = {
   'application/json': bodyParser.json(),
 }
 
 app.get('/swagger.json', api.docs())
-app.use(api.routes({
-  handlers,
-  parsers,
-}))
+app.use('/docs', api.swaggerUi({ swaggerPath: '/swagger.json' }))
+app.use(api.validate({ parsers }))
+app.use(router)
 
 app.listen(PORT, () => console.log(`Server started on port: ${PORT}`))
 ```
+
+Note that if you use the `basePath:` property in your swagger definition
 
 # API
 
@@ -163,7 +161,7 @@ app.get('/docs', api.swaggerUi({
   assets are being hosted. By default, it will pull the version of swagger-ui
   bundled with skyway.
 
-## `api.routes(options)`
+## `api.validate(options)` (alias `api.routes(options)`)
 
 Returns an express router that has all of the validation/coercion/parsing
 associated with each handler.
@@ -175,6 +173,16 @@ associated with each handler.
   `x-cors-options` key in your swagger doc at the root level, on the path level,
   or on the operation (method) level.
 
+- `options.failOnMissingHandler` - This is meant to be used if you want to force
+  implementation of endpoints. This will force you to use the below
+  `options.handlers` in order to hook up your endpoints. If this is set to true,
+  it will still let validation and security stuff run, but it will pass a
+  `501 Not Implemented` error to express. If false, it will just leave it up to
+  you how to handle the endpoint, but you can still rest easy that the endpoint
+  is validated.
+
+  Default: `false`
+
 - `options.handlers` - This should be an object whose keys are the paths defined
   in your docs, and the values are also objects, whose keys are the methods for
   those paths, and the values of those methods are express middleware (or
@@ -184,10 +192,10 @@ associated with each handler.
 
   ```yaml
   paths:
-    /users
+    /users:
       get: # ...
       post: # ...
-    /users/:id
+    /users/:id:
       get: # ...
       put: # ...
       delete: # ...
@@ -207,14 +215,21 @@ associated with each handler.
       delete: (req, res, next) => {},
     },
   }
-  api.routes({ handlers })
+  api.validate({ handlers })
   ```
 
   If you don't provide a handler for an endpoint you have documented, a
   placeholder handler that sends a `501 Not Implemented` error.
 
   Note: If you put a `basePath` option in your api docs, it will be used to
-  prefix all of your api routes.
+  prefix all of your api routes. But this is not the case if you use your
+  express router. You must put in the basePath manually in order to reap the
+  benifits of validation. This can be done simply if you use an express router
+  for your routes:
+
+  ```js
+  app.use('/api/v1', router)
+  ```
 
 - `options.parsers` - This is a map of the different `Content-Types` that your
   api can consume, and their matching body parsing middleware.
@@ -256,8 +271,7 @@ associated with each handler.
   Then you'll want to implement those in this way:
 
   ```js
-  app.use(api.routes({
-    handlers: { /* ... */ },
+  app.use(api.validate({
     security: {
       fooBasicAuth(req, creds) {
         // you can return a promise
@@ -274,6 +288,7 @@ associated with each handler.
       },
     },
   }))
+  app.use(myApiRoutes)
   ```
 
   The function signature is different based on the scheme type.
@@ -312,7 +327,7 @@ associated with each handler.
 
   **IMPORTANT** The security handlers run before any of the headers or body get
   validated. In fact, skyway hasn't even parsed the body yet. If you need the
-  body parsed, you should run a body parser before the skyway `.routes()`
+  body parsed, you should run a body parser before the skyway `.validate()`
   middleware.
 
 - `options.errorHandler` - This should be an express middleware. It doesn't
@@ -325,7 +340,7 @@ associated with each handler.
   this usage in case it breaks:
 
   ```js
-  app.use(api.routes({ /* options */ }))
+  app.use(api.validate({ /* options */ }))
   app.use((err, req, res, next) => {
     res.status(err.statusCode || 500)
     res.send(err.message)
@@ -336,8 +351,6 @@ associated with each handler.
 
 - You can only strip out entire objects from the public view, there is currently
   not a way to strip out specific properties.
-- Implement the swagger security spec, or at least open it up for the developer
-  to implement.
 - formData is not supported. Along with that, file input types are not
   supported... I really want to support this though, but there are so many ways
   to parse a file (storing a temp file somewhere, streaming) and there are use
@@ -347,7 +360,7 @@ associated with each handler.
 - Response validation does not work yet. Also need ideas for the best way to do
   this. This will become especially important for test code generation and
   "snapshot"-like tests.
-- Better configuration options. Right now, extra parameterts passed into
-  req.query and req.headers get stripped out of the object if they aren't
-  defined in the path. There might be a better way to configure this, but
-  perhaps just passing an `x-additionalProperties: false` would be sufficient.
+- Better configuration options. Right now, extra parameters passed into
+  req.query get stripped out of the object if they aren't defined in the path.
+  There might be a better way to configure this, but perhaps just passing an
+  `x-additionalProperties: false` would be sufficient.

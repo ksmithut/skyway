@@ -40,6 +40,19 @@ describe('skyway', () => {
     return request
   }
 
+  it('works with default express router', () => {
+    const app = express()
+    const api = skyway(relative('fixtures', 'rest.yaml'))
+    const router = new express.Router()
+    router.get('/users', (req, res) => res.json([]))
+    app.use(api.routes({ parsers }))
+    app.use('/api/v1', router)
+    const request = supertest(app)
+    return request
+      .get('/api/v1/users')
+      .expect(200, [])
+  })
+
   it('returns bundled docs', () => {
     const request = createRequest('simple')
     return request
@@ -97,10 +110,26 @@ describe('skyway', () => {
   })
 
   it('returns 501 for unhandled endpoints', () => {
-    const request = createRequest('rest')
+    const request = createRequest('rest', {
+      failOnMissingHandler: true,
+    })
     return request
       .get('/api/v1/users')
       .expect(501, 'Not Implemented')
+  })
+
+  it('returns successful if is handled', () => {
+    const request = createRequest('rest', {
+      failOnMissingHandler: true,
+      handlers: {
+        '/users': {
+          get: (req, res) => res.json([]),
+        },
+      },
+    })
+    return request
+      .get('/api/v1/users')
+      .expect(200, [])
   })
 
   it('parses the body with given parser', () => {
@@ -178,6 +207,7 @@ describe('skyway', () => {
           },
         },
         cors: {},
+        failOnMissingHandler: true,
       })
       return request
         .options('/api/v1/users')
