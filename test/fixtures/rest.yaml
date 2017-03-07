@@ -26,6 +26,7 @@ securityDefinitions:
       users:read: Read Users
       users:write: Write Users
 paths:
+  x-custom-thing: true
   /health:
     get:
       security:

@@ -9,6 +9,11 @@ const PORT = process.env.PORT || '8000'
 const app = express()
 const api = skyway(path.join(__dirname, 'swagger.yaml'))
 
+api.catch((err) => {
+  console.error('Swagger Docs Error:', err.message)
+})
+
+// Route Implementations
 const router = new express.Router()
 router.get('/greet/:name', (req, res) => {
   // When your data gets here, req.query.nums is going to be an array of
@@ -18,25 +23,28 @@ router.get('/greet/:name', (req, res) => {
   const numbersMessage = favoriteNumbers
     ? `Your favorite numbers are ${favoriteNumbers}.`
     : 'You have no favorite numbers.'
-  res.send(`${greeting} ${numbersMessage}`)
+  res.send(`${greeting} ${numbersMessage}\n`)
 })
 router.get('/secure', (req, res) => {
-  res.send('Execute Order 66')
+  res.send('Execute Order 66\n')
 })
 
-const parsers = {
-  'application/json': bodyParser.json(),
-}
-
-const security = {
+// App setup
+app.use(api.init())
+app.use(api.docs({
+  swaggerUi: true,
+}))
+app.use(api.cors())
+app.use(api.security({
   basicAuth: (req, creds) => {
-    return creds.user === 'username' && creds.password === 'password'
+    return creds.username === 'admin' && creds.password === 'admin'
   },
-}
-
-app.get('/swagger.json', api.docs())
-app.use('/docs', api.swaggerUi({ swaggerPath: '/swagger.json' }))
-app.use(api.routes({ parsers, security }))
-app.use(router)
+}))
+app.use(api.validate('head'))
+app.use(api.parse({
+  'application/json': bodyParser.json(),
+}))
+app.use(api.validate('body'))
+app.use('/api/v1', router)
 
 app.listen(PORT, () => console.log(`Server started on port: ${PORT}`))

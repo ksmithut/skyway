@@ -1,4 +1,5 @@
 lib/**/*.spec.js
+**/*.md
 fixtures
 coverage
 examples
