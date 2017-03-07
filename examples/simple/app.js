@@ -28,7 +28,7 @@ app.use(api.parse({
 }))
 app.use(api.validate('body'))
 app.use('/api/v1', routes)
-app.use((err, req, res, next) => {
+app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
   res.status(err.status || err.statusCode || 500).json(err)
 })
 

@@ -33,7 +33,7 @@ hopefully demonstrate how you can leverage skyway to build a mature, secure
 api. This is a simple example to demonstrate a few simple endpoints. For a more
 extensive example, see [./examples/rest](examples/rest).
 
-<details><summary><h1>Usage (Example)</h1></summary>
+<details><summary>Example</summary>
 
 <details><summary>`swagger.yaml`</summary>
 
@@ -201,7 +201,7 @@ and all the other things that are required when maintaining an api contract.
 
 # API
 
-## skyway(swaggerObject, validateOptions)
+<details><summary>`skyway(swaggerObject, validateOptions)`</summary>
 
 Returns a new instance of skyway. This method returns a promise which also has
 additional methods (as described below). The arguments are the same arguments
@@ -233,8 +233,9 @@ api.catch((err) => {
   console.log('Swagger Error', err.message)
 })
 ```
+</details>
 
-## .init()
+<details><summary>`.init()`</summary>
 
 Returns express middleware that waits for the swagger middleware to be
 initialized (which happens asynchronously) before allowing requests through.
@@ -259,36 +260,45 @@ api.then(() => {
 })
 ```
 
-Slightly slower time before you can accept requests, but then you get rid of an
-extra (quick) layer of middleware. Up to you.
+Slightly slower time (like milliseconds) before you can accept requests, but
+then you get rid of an extra (quick) layer of middleware. Up to you.
+</details>
 
-## .docs(options)
+<details><summary>`.docs(options)`</summary>
 
 Returns express middleware that provides external docs. This also is not
 required to get any sort of validation functionality out of skyway. This acts as
 a utility to you to provide documentation to your users.
 
-- `options.swaggerPath` The path to serve your swagger docs. Default is
-  `/swagger.json`. Note that in your docs, if you put `x-private: true` anywhere
-  in your docs, the containing object will be hidden from view, but will still
-  be validated on. This is useful for when you are still ironing out kinks in
-  your api and don't want anyone depending on it just yet, or if you straight up
-  don't want people seeing your endpoints or specific params. You can put that
-  `x-private: true` in any object, and it will disappear. Note that there is no
-  way to hide sibling fields to the `x-private` key, just the parent object.
-  This is planned for the future, but for now, that's the only limitation.
+<details><summary>`options.swaggerPath`</summary>
+The path to serve your swagger docs. Default is `/swagger.json`. Note that in
+your docs, if you put `x-private: true` anywhere in your docs, the containing
+object will be hidden from view, but will still be validated on. This is useful
+for when you are still ironing out kinks in your api and don't want anyone
+depending on it just yet, or if you straight up don't want people seeing your
+endpoints or specific params. You can put that `x-private: true` in any object,
+and it will disappear. Note that there is no way to hide sibling fields to the
+`x-private` key, just the parent object. This is planned for the future, but for
+now, that's the only limitation.
+</details>
 
-- `options.swaggerUi` Used to enable swagger-ui as a public documentation
-  viewer. It will point to wherever you set your `swaggerPath`. This might be a
-  cool thing to enable during development so you can test out your api, but it's
-  also a cheap way of giving your users documentation to play with. If set to
-  `true`, the path to swagger-ui will be `/docs/`. Or you can pass your own
-  path.
+<details><summary>`options.swaggerUi`</summary>
+Used to enable swagger-ui as a public documentation viewer. It will point to
+wherever you set your `swaggerPath`. This might be a cool thing to enable during
+development so you can test out your api, but it's also a cheap way of giving
+your users documentation to play with. If set to `true`, the path to swagger-ui
+will be `/docs/`. Or you can pass your own path. Default: `null`, which means it
+will not expose swagger ui.
+</details>
 
-- `options.override` Due to the limitation of `x-private`, you can pass in an
-  override function, which takes in the swagger docs object as the first
-  parameter, and whatever object you return is what gets served at your
-  `options.swaggerPath`. Default: `(val) => val`
+<details><summary>`options.override`</summary>
+Due to the limitation of `x-private`, you can pass in an override function,
+which takes in the swagger docs object as the first parameter, and whatever
+object you return is what gets served at your `options.swaggerPath`. Default:
+`(val) => val`.
+</details>
+
+<details><summary>Example</summary>
 
 ```js
 // Defaults shown
@@ -298,14 +308,38 @@ app.use(api.docs({
   override: (val) => val,
 }))
 ```
+</details>
+</details>
 
-## .cors(options)
+<details><summary>`.cors(options)`</summary>
 
-## .security(options)
+This endpoint sets up the `cors` module to do the preflight cors requests and
+return the proper `Allow` headers. This will also put into place the
+`405 Method Not Allowed` errors for methods you don't define in your swagger
+docs.
 
-## .validate(options)
+Allows options are documented [here](https://www.npmjs.com/package/cors#configuration-options)
+but take note that the `methods` option will be overwritten.
 
-## .parse(options)
+<details><summary>Example</summary>
+
+```js
+app.use(api.cors())
+```
+</details>
+</details>
+
+<details><summary>`.security(options)`</summary>
+
+</details>
+
+<details><summary>`.validate(options)`</summary>
+
+</details>
+
+<details><summary>`.parse(options)`</summary>
+
+</details>
 
 # TODO
 
