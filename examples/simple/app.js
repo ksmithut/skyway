@@ -4,6 +4,7 @@ const path = require('path')
 const express = require('express')
 const bodyParser = require('body-parser')
 const skyway = require('../../')
+const routes = require('./routes')
 
 const PORT = process.env.PORT || '8000'
 const app = express()
@@ -13,27 +14,8 @@ api.catch((err) => {
   console.error('Swagger Docs Error:', err.message)
 })
 
-// Route Implementations
-const router = new express.Router()
-router.get('/greet/:name', (req, res) => {
-  // When your data gets here, req.query.nums is going to be an array of
-  // integers. Coerced and validated before it even gets here.
-  const greeting = `Hello ${req.params.name}.`
-  const favoriteNumbers = req.query.nums.join(', ')
-  const numbersMessage = favoriteNumbers
-    ? `Your favorite numbers are ${favoriteNumbers}.`
-    : 'You have no favorite numbers.'
-  res.send(`${greeting} ${numbersMessage}\n`)
-})
-router.get('/secure', (req, res) => {
-  res.send('Execute Order 66\n')
-})
-
-// App setup
 app.use(api.init())
-app.use(api.docs({
-  swaggerUi: true,
-}))
+app.use(api.docs())
 app.use(api.cors())
 app.use(api.security({
   basicAuth: (req, creds) => {
@@ -45,6 +27,9 @@ app.use(api.parse({
   'application/json': bodyParser.json(),
 }))
 app.use(api.validate('body'))
-app.use('/api/v1', router)
+app.use('/api/v1', routes)
+app.use((err, req, res, next) => {
+  res.status(err.status || err.statusCode || 500).json(err)
+})
 
 app.listen(PORT, () => console.log(`Server started on port: ${PORT}`))
