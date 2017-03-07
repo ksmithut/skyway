@@ -33,8 +33,6 @@ hopefully demonstrate how you can leverage skyway to build a mature, secure
 api. This is a simple example to demonstrate a few simple endpoints. For a more
 extensive example, see [./examples/rest](examples/rest).
 
-<details><summary>Example</summary>
-
 <details><summary>`swagger.yaml`</summary>
 
 ```yaml
@@ -173,7 +171,6 @@ $ curl http://username:password@localhost:8000/api/v1/secure
 $ curl http://admin:admin@localhost:8000/api/v1/secure
 > Execute Order 66
 ```
-</details>
 
 # Idealogy
 
@@ -201,7 +198,7 @@ and all the other things that are required when maintaining an api contract.
 
 # API
 
-<details><summary>`skyway(swaggerObject, validateOptions)`</summary>
+<details><summary>`const api = skyway(swaggerObject, validateOptions)`</summary>
 
 Returns a new instance of skyway. This method returns a promise which also has
 additional methods (as described below). The arguments are the same arguments
@@ -238,7 +235,9 @@ Note that all of the middleware utilize the `basePath:` option from your swagger
 docs to prefix all of the routes.
 </details>
 
-<details><summary>`.init()`</summary>
+---
+
+<details><summary>`api.init()`</summary>
 
 Returns express middleware that waits for the swagger middleware to be
 initialized (which happens asynchronously) before allowing requests through.
@@ -267,7 +266,9 @@ Slightly slower time (like milliseconds) before you can accept requests, but
 then you get rid of an extra (quick) layer of middleware. Up to you.
 </details>
 
-<details><summary>`.docs(options)`</summary>
+---
+
+<details><summary>`api.docs(options)`</summary>
 
 Returns express middleware that provides external docs. This also is not
 required to get any sort of validation functionality out of skyway. This acts as
@@ -314,7 +315,9 @@ app.use(api.docs({
 </details>
 </details>
 
-<details><summary>`.cors(options)`</summary>
+---
+
+<details><summary>`api.cors(options)`</summary>
 
 This middleware sets up the `cors` module to do the preflight cors requests and
 return the proper `Allow` headers. This will also put into place the
@@ -332,7 +335,9 @@ app.use(api.cors())
 </details>
 </details>
 
-<details><summary>`.security(handlers)`</summary>
+---
+
+<details><summary>`api.security(handlers)`</summary>
 
 This middleware aims to implement the security rules defined in your swagger
 spec as [`securityDefinitions`](http://swagger.io/specification/#securityDefinitionsObject).
@@ -500,7 +505,9 @@ app.use(api.security({
 </details>
 </details>
 
-<details><summary>`.parse(options)`</summary>
+---
+
+<details><summary>`api.parse(options)`</summary>
 Returns middleware that is responsible for parsing the request body. This is
 used primarily to make sure you've implemented the parsers for the content-types
 you declare in your `consumes` keys. It also gives you the flexibility to have
@@ -551,7 +558,9 @@ app.use(api.parse({
 </details>
 </details>
 
-<details><summary>`.validate(options)`</summary>
+---
+
+<details><summary>`api.validate(options)`</summary>
 Return middleware that validates and sanitizes request parameters. It can
 validate `req.query`, `req.params`, `req.headers`, and `req.body`.
 
