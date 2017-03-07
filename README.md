@@ -233,6 +233,9 @@ api.catch((err) => {
   console.log('Swagger Error', err.message)
 })
 ```
+
+Note that all of the middleware utilize the `basePath:` option from your swagger
+docs to prefix all of the routes.
 </details>
 
 <details><summary>`.init()`</summary>
@@ -313,7 +316,7 @@ app.use(api.docs({
 
 <details><summary>`.cors(options)`</summary>
 
-This endpoint sets up the `cors` module to do the preflight cors requests and
+This middleware sets up the `cors` module to do the preflight cors requests and
 return the proper `Allow` headers. This will also put into place the
 `405 Method Not Allowed` errors for methods you don't define in your swagger
 docs.
@@ -329,16 +332,270 @@ app.use(api.cors())
 </details>
 </details>
 
-<details><summary>`.security(options)`</summary>
+<details><summary>`.security(handlers)`</summary>
 
+This middleware aims to implement the security rules defined in your swagger
+spec as [`securityDefinitions`](http://swagger.io/specification/#securityDefinitionsObject).
+
+As a quick overview, you define your security definitions in your swagger
+document like this:
+
+```yaml
+securityDefinitions:
+  basicAuth: # This key can be whatever you want it to be
+    type: basic # There are three valid types of auth in swagger: basic, apiKey, and oauth2
+  apiKey:
+    type: apiKey # For apiKey types, you need an `in:` property and a `name:`
+    in: query # This can be `query` or `header`
+    name: token # This is how we get the value off of the `in:`
+  oauth: # The oauth2 spec is complex. Look up the spec linked above.
+    type: oauth2
+    authorizationUrl: http://swagger.io/api/oauth/dialog
+    flow: implicit
+    scopes:
+      write:pets: modify petsin your account
+      read:pets: read your pets
+```
+
+And for your endpoints, you need to add a `security` key:
+
+```yaml
+paths:
+  /endpoint:
+    get:
+      security: # this is an array of objects.
+        # Each key in each object should correspond with a key in the security
+        # definitions object.
+        # For each object in this array, only one needs to pass security to
+        # allow access.
+        # For each property in the object, all of them must pass to consider the
+        # object in the array passed.
+        # So in this example, they can pass the basicAuth authentication, but if
+        # they don't, they need to pass apiKey AND oauth in order to be allowed
+        # access.
+        - basicAuth: [] # For basic and apiKey types, this should always be an empty array
+        - apiKey: []
+          oauth: # oauth arrays should define the scopes needed to access the endpoint
+            - write:pets
+```
+
+This security object can be placed at the root level of your swagger document to
+define the security for every endpoint. The security definition at the path
+level will override the root level security rules. So if you have root level
+security rules and you want to disable it for an endpoint, you may do so by
+passing `security: []` as your operation level security rules.
+
+The `handlers` object you pass into the middleware configuration should be an
+object whose keys match up with your security definition, and whose values are
+functions. The function signatures will vary depending on the type. They may
+return a value or a Promise that will resolve to a value, but in order to pass
+authentication, they must resolve to a truthy value. If a falsy value is passed
+it will be considered a failed authentication. You may also throw an error and
+it will be passed through express' error handling middleware.
+
+```js
+app.use(api.security({
+  basicAuth: (req, creds, definition) => {
+    // - req - The express request object
+    // - creds - An object with the `username` and `password` properties from
+    //   the `Authentication: Basic` header.
+    // - definition - The swagger definition for the object. This might prove
+    //   useful if you add in any `x-*` custom attributes
+  },
+  apiKey: (req, apiKey, definition) => {
+    // - req - The express request object
+    // - apiKey - value of the token as retrieved from the header or query. Note
+    //   that if you are using header and are using a security scheme of some
+    //   sort like `Bearer {token}` or `JWT {token}`, those prefixes will be
+    //   included in the value of the `apiKey` variable
+    // - definition - Same as basicAuth implementation
+  },
+  oauth: (req, scopes, definition) => {
+    // - req - The express request object
+    // - scopes - The array of scopes required for the current endpoint
+    // - definition - Same as basicAuth and apiKey implementation
+  },
+}))
+```
+
+Note that you can have multiple security definitions for any given type. So you
+can have two (or more) implementations of basic auth that get data from two
+different sources, and the right one will be called based on the endpoint's
+security rules.
+
+Also, if you don't implement one of the securityDefinitions that's being used,
+those endpoints that use that security rule will return a `502 Not Implemented`
+error.
+
+<details><summary>Example</summary>
+
+```yaml
+swagger: '2.0'
+info:
+  title: My Secure Api
+  version: '2.0.0'
+securityDefinitions:
+  myBasicAuth:
+    type: basic
+  myHeaderTokenAuth:
+    type: apiKey
+    in: header
+    name: Authorization
+  myQueryTokenAuth:
+    type: apiKey
+    in: query
+    name: token
+paths:
+  /basic:
+    get:
+      security:
+        - myBasicAuth: []
+      responses:
+        200:
+          description: ''
+  /token:
+    get:
+      security:
+        - myHeaderTokenAuth: []
+        - myQueryTokenAuth: []
+```
+
+```js
+function basicAuth(req, creds) {
+  return User
+    .findOne({ username: creds.username })
+    .then((user) => {
+      if (!user) throw new Error('Incorrect Credentials')
+      // Just in case, you should know that this is not secure in any way. You
+      // should hash your password and do a comparison that way. But even this
+      // approach is vulnerable to timing attacks.
+      const validPassword = user.password === creds.password
+      if (!validPassword) return false
+      req.user = user
+      return true
+    })
+}
+function tokenAuth(req, token) {
+  return Token
+    .find({ _id: token, expiresAt: { $lt: Date.now() }})
+    .then((token) => {
+      if (!token) throw new Error('Invalid Token')
+      return User.findOne({ _id: token.user })
+    })
+    .then((user) => {
+      if (!token) throw new Error('Invalid Token')
+      req.user = user
+      return true
+    })
+}
+app.use(api.security({
+  myBasicAuth: basicAuth,
+  myHeaderTokenAuth: (req, token) => {
+    token = token.replace(/^bearer /i, '')
+    return tokenAuth(req, token)
+  },
+  myQueryTokenAuth: tokenAuth
+}))
+```
 </details>
-
-<details><summary>`.validate(options)`</summary>
-
 </details>
 
 <details><summary>`.parse(options)`</summary>
+Returns middleware that is responsible for parsing the request body. This is
+used primarily to make sure you've implemented the parsers for the content-types
+you declare in your `consumes` keys. It also gives you the flexibility to have
+different content-types that consume the same type (json, xml). For example, you
+could have a consumes `application/user+json` and you could write a specialized
+body parser for user objects.
 
+The options passed in should be an object whose keys match up (exactly, no
+glob support right now) with the available `consumes` values, and the values
+of those keys are body parsing middleware.
+
+<details><summary>Example</summary>
+
+```yaml
+swagger: '2.0'
+info:
+  title: My API
+  version: '0.0.0'
+consumes: # This acts as a default for operations that don't define a consumes
+  - application/json
+paths:
+  /users:
+    post:
+      parameters:
+        - name: body
+          in: body
+          schema:
+            required:
+              - username
+              - password
+            properties:
+              username:
+                type: string
+              password:
+                type: string
+                minLength: 8
+      responses:
+        200:
+          description: success
+```
+
+```js
+const bodyParser = require('body-parser')
+app.use(api.parse({
+  'application/json': bodyParser.json(),
+}))
+```
+</details>
+</details>
+
+<details><summary>`.validate(options)`</summary>
+Return middleware that validates and sanitizes request parameters. It can
+validate `req.query`, `req.params`, `req.headers`, and `req.body`.
+
+Options can be passed in various forms:
+
+- If it is falsy, it will not validate anything.
+- If it is `true`, it will validate all four parameters.
+- If it is `'head'`, it will validate `req.query`, `req.params`, and `req.headers`.
+- If it is `'body'`, it will validate `req.body`.
+- If it is an object, it can have the following keys: `query`, `params`,
+  `headers`, and `body`. Each of those properties should be a boolean: `true` if
+  that parameter type should be validated, `false` if it should skip validation.
+
+The validation/sanitization involved will mutate the parameters to insert
+defaults, coerce values to their correct types (if possible), and strip out
+extra properties you don't define in your docs. Headers, however, will not be
+stripped of extra properties, but defaults will be put in place, and values will
+be coerced. Also, for body parameters that provide a schema, you must use the
+json schema property `additionalProperties: false` to strip extra values.
+Otherwise, extra properties will be allowed.
+
+<details><summary>Example</summary>
+It is suggested that you validate all of the parameters you get in the head
+(params, query, headers) first before you parse the body. This gives you a quick
+way to fail early before attempting to do the expensive operation of body
+parsing. That being said, you can validate in whatever order you like:
+
+```js
+app.use(api.validate('head'))
+app.use(api.parse({
+  'application/json': bodyParser.json(),
+}))
+app.use(api.validate('body'))
+```
+
+or
+
+```js
+app.use(api.parse({
+  'application/json': bodyParser()
+}))
+app.use(api.validate(true))
+```
+</details>
 </details>
 
 # TODO
