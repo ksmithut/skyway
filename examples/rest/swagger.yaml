@@ -1,0 +1,96 @@
+swagger: '2.0'
+info:
+  title: Users Service
+  version: '0.0.0'
+basePath: /api/v1
+consumes:
+  - application/json
+securityDefinitions:
+  basicAuth:
+    type: basic
+security:
+  - basicAuth: []
+paths:
+  /users:
+    get:
+      responses:
+        200:
+          $ref: '#/responses/UserList'
+    post:
+      security: []
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/UserCreate'
+      responses:
+        201:
+          $ref: '#/responses/User'
+  /users/{id}:
+    parameters:
+      - name: id
+        in: path
+        type: string
+        required: true
+    get:
+      responses:
+        200:
+          $ref: '#/responses/User'
+    put:
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/UserUpdate'
+      responses:
+        200:
+          $ref: '#/responses/User'
+    delete:
+      responses:
+        204:
+          description: success
+
+responses:
+  UserList:
+    description: success
+    schema:
+      type: array
+      items:
+        $ref: '#/definitions/UserRead'
+  User:
+    description: success
+    schema:
+      $ref: '#/definitions/UserRead'
+
+definitions:
+  UserRead:
+    properties:
+      id:
+        type: string
+      createdAt:
+        type: integer
+      username:
+        type: string
+  UserCreate:
+    additionalProperties: false
+    required:
+      - username
+      - password
+    properties:
+      username:
+        type: string
+        minLength: 1
+      password:
+        type: string
+        minLength: 8
+  UserUpdate:
+    additionalProperties: false
+    properties:
+      username:
+        type: string
+        minLength: 1
+      password:
+        type: string
+        minLength: 8
