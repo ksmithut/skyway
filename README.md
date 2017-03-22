@@ -131,19 +131,23 @@ api.catch((err) => {
   console.error('Swagger Docs Error:', err.message)
 })
 
-app.use(api.init())
-app.use(api.docs())
-app.use(api.cors())
-app.use(api.security({
-  basicAuth: (req, creds) => {
-    return creds.username === 'admin' && creds.password === 'admin'
-  },
-}))
-app.use(api.validate('head'))
-app.use(api.parse({
-  'application/json': bodyParser.json(),
-}))
-app.use(api.validate('body'))
+app.use(
+  api.init(),
+  api.docs({
+    swaggerUi: true,
+  }),
+  api.cors(),
+  api.security({
+    basicAuth: (req, creds) => {
+      return creds.username === 'admin' && creds.password === 'admin'
+    },
+  }),
+  api.validate('head'),
+  api.parse({
+    'application/json': bodyParser.json(),
+  }),
+  api.validate('body')
+)
 app.use('/api/v1', routes)
 app.use((err, req, res, next) => {
   res.status(err.status || err.statusCode || 500).json(err)
