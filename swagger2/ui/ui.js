@@ -9,7 +9,8 @@ const PATH_TO_SWAGGER_UI = path.dirname(
 )
 
 module.exports = () => {
-  return (swaggerPath = '/swagger.json') => {
+  return swaggerPath => {
+    swaggerPath = swaggerPath || '/swagger.json'
     const router = new express.Router()
 
     router.get('/', (req, res, next) => {
