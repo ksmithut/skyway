@@ -1,6 +1,6 @@
 {
   "name": "skyway",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "An express routing library that leverages swagger (open api) definitions to validate incoming and outgoing data.",
   "main": "swagger2/skyway.js",
   "repository": {
