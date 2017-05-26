@@ -1,0 +1,401 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`swagger2/normalizeDocs produces expected object 1`] = `
+Object {
+  "basePath": "/api/v1",
+  "operations": Array [
+    Object {
+      "consumes": Array [
+        "application/json",
+      ],
+      "expressPath": "/health",
+      "extensions": Object {
+        "x-some-extension": "bar",
+      },
+      "method": "get",
+      "parameters": Object {},
+      "path": "/health",
+      "produces": Array [
+        "application/json",
+      ],
+      "responses": Object {
+        "200": Object {
+          "description": "successful response",
+          "schema": Object {
+            "properties": Object {
+              "success": Object {
+                "type": "string",
+              },
+            },
+          },
+        },
+      },
+      "security": Array [],
+    },
+    Object {
+      "consumes": Array [
+        "application/json",
+      ],
+      "expressPath": "/users",
+      "extensions": Object {
+        "x-some-extension": "bar",
+      },
+      "method": "get",
+      "parameters": Object {
+        "query": Array [
+          Object {
+            "default": 25,
+            "in": "query",
+            "maximum": 100,
+            "minimum": 1,
+            "name": "limit",
+            "type": "integer",
+          },
+          Object {
+            "default": 0,
+            "in": "query",
+            "minimum": 0,
+            "name": "skip",
+            "type": "integer",
+          },
+        ],
+      },
+      "path": "/users",
+      "produces": Array [
+        "application/json",
+      ],
+      "responses": Object {
+        "200": Object {
+          "description": "successful response",
+          "headers": Object {
+            "Item-Count": Object {
+              "type": "integer",
+            },
+          },
+          "schema": Object {
+            "items": Object {
+              "properties": Object {
+                "createdAt": Object {
+                  "type": "number",
+                },
+                "updatedAt": Object {
+                  "type": "number",
+                },
+                "username": Object {
+                  "type": "string",
+                },
+              },
+            },
+            "type": "array",
+          },
+        },
+      },
+      "security": Array [
+        Object {
+          "basicAuth": Array [],
+        },
+        Object {
+          "apiKey": Array [],
+        },
+        Object {
+          "apiKeyHeader": Array [],
+        },
+      ],
+    },
+    Object {
+      "consumes": Array [
+        "application/json",
+      ],
+      "expressPath": "/users",
+      "extensions": Object {
+        "x-some-extension": "foo",
+      },
+      "method": "post",
+      "parameters": Object {
+        "body": Array [
+          Object {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": Object {
+              "additionalProperties": false,
+              "properties": Object {
+                "password": Object {
+                  "type": "string",
+                },
+                "username": Object {
+                  "type": "string",
+                },
+              },
+              "required": Array [
+                "username",
+                "password",
+              ],
+            },
+          },
+        ],
+      },
+      "path": "/users",
+      "produces": Array [
+        "application/json",
+      ],
+      "responses": Object {
+        "201": Object {
+          "description": "successful creation",
+          "schema": Object {
+            "properties": Object {
+              "createdAt": Object {
+                "type": "number",
+              },
+              "updatedAt": Object {
+                "type": "number",
+              },
+              "username": Object {
+                "type": "string",
+              },
+            },
+          },
+        },
+      },
+      "security": Array [
+        Object {
+          "basicAuth": Array [],
+        },
+        Object {
+          "apiKey": Array [],
+        },
+        Object {
+          "apiKeyHeader": Array [],
+        },
+      ],
+    },
+    Object {
+      "consumes": Array [
+        "application/json",
+      ],
+      "expressPath": "/users/current",
+      "extensions": Object {
+        "x-some-extension": "foo",
+      },
+      "method": "get",
+      "parameters": Object {},
+      "path": "/users/current",
+      "produces": Array [
+        "application/json",
+      ],
+      "responses": Object {
+        "200": Object {
+          "description": "successful read",
+          "schema": Object {
+            "properties": Object {
+              "createdAt": Object {
+                "type": "number",
+              },
+              "updatedAt": Object {
+                "type": "number",
+              },
+              "username": Object {
+                "type": "string",
+              },
+            },
+          },
+        },
+      },
+      "security": Array [
+        Object {
+          "basicAuth": Array [],
+        },
+      ],
+    },
+    Object {
+      "consumes": Array [
+        "application/json",
+      ],
+      "expressPath": "/users/:id",
+      "extensions": Object {
+        "x-some-extension": "foo",
+      },
+      "method": "get",
+      "parameters": Object {
+        "path": Array [
+          Object {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string",
+          },
+        ],
+      },
+      "path": "/users/{id}",
+      "produces": Array [
+        "application/json",
+      ],
+      "responses": Object {
+        "200": Object {
+          "description": "successful read",
+          "schema": Object {
+            "properties": Object {
+              "createdAt": Object {
+                "type": "number",
+              },
+              "updatedAt": Object {
+                "type": "number",
+              },
+              "username": Object {
+                "type": "string",
+              },
+            },
+          },
+        },
+      },
+      "security": Array [
+        Object {
+          "basicAuth": Array [],
+        },
+        Object {
+          "apiKey": Array [],
+        },
+        Object {
+          "apiKeyHeader": Array [],
+        },
+      ],
+    },
+    Object {
+      "consumes": Array [
+        "application/json",
+      ],
+      "expressPath": "/users/:id",
+      "extensions": Object {
+        "x-some-extension": "foo",
+      },
+      "method": "put",
+      "parameters": Object {
+        "body": Array [
+          Object {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": Object {
+              "additionalProperties": false,
+              "properties": Object {
+                "username": Object {
+                  "type": "string",
+                },
+              },
+            },
+          },
+        ],
+        "path": Array [
+          Object {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string",
+          },
+        ],
+      },
+      "path": "/users/{id}",
+      "produces": Array [
+        "application/json",
+      ],
+      "responses": Object {
+        "200": Object {
+          "description": "successful edit",
+          "schema": Object {
+            "properties": Object {
+              "createdAt": Object {
+                "type": "number",
+              },
+              "updatedAt": Object {
+                "type": "number",
+              },
+              "username": Object {
+                "type": "string",
+              },
+            },
+          },
+        },
+      },
+      "security": Array [
+        Object {
+          "basicAuth": Array [],
+        },
+        Object {
+          "apiKey": Array [],
+        },
+        Object {
+          "apiKeyHeader": Array [],
+        },
+      ],
+    },
+    Object {
+      "consumes": Array [
+        "application/json",
+      ],
+      "expressPath": "/users/:id",
+      "extensions": Object {
+        "x-some-extension": "foo",
+      },
+      "method": "delete",
+      "parameters": Object {
+        "path": Array [
+          Object {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string",
+          },
+        ],
+      },
+      "path": "/users/{id}",
+      "produces": Array [
+        "application/json",
+      ],
+      "responses": Object {
+        "200": Object {
+          "description": "successful delete",
+          "schema": Object {
+            "properties": Object {
+              "createdAt": Object {
+                "type": "number",
+              },
+              "updatedAt": Object {
+                "type": "number",
+              },
+              "username": Object {
+                "type": "string",
+              },
+            },
+          },
+        },
+      },
+      "security": Array [
+        Object {
+          "basicAuth": Array [],
+        },
+        Object {
+          "apiKey": Array [],
+        },
+        Object {
+          "apiKeyHeader": Array [],
+        },
+      ],
+    },
+  ],
+  "securityDefinitions": Object {
+    "apiKey": Object {
+      "in": "query",
+      "name": "token",
+      "type": "apiKey",
+    },
+    "apiKeyHeader": Object {
+      "in": "header",
+      "name": "Authorization",
+      "type": "apiKey",
+    },
+    "basicAuth": Object {
+      "type": "basic",
+    },
+  },
+}
+`;

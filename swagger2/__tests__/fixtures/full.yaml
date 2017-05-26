@@ -1,0 +1,166 @@
+swagger: '2.0'
+info:
+  title: Full Example
+  version: '1.0.0'
+basePath: /api/v1
+consumes:
+  - application/json
+produces:
+  - application/json
+securityDefinitions:
+  basicAuth:
+    type: basic
+  apiKey:
+    type: apiKey
+    in: query
+    name: token
+  apiKeyHeader:
+    type: apiKey
+    in: header
+    name: Authorization
+x-private:
+  - securityDefinitions
+  - [ security, 1 ]
+  - [ security, 2 ]
+  - [ security, 3 ]
+  - null
+security:
+  - basicAuth: []
+  - apiKey: []
+  - apiKeyHeader: []
+paths:
+  /health:
+    x-private: true
+    get:
+      security: []
+      responses:
+        200:
+          $ref: '#/responses/HealthSuccess'
+  /users:
+    get:
+      parameters:
+        - $ref: '#/parameters/limit'
+        - $ref: '#/parameters/skip'
+      responses:
+        200:
+          $ref: '#/responses/UserListSuccess'
+    post:
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/UserCreate'
+      responses:
+        201:
+          $ref: '#/responses/UserCreateSuccess'
+  /users/current:
+    get:
+      security:
+        - basicAuth: []
+      responses:
+        200:
+          $ref: '#/responses/UserReadSuccess'
+  /users/{id}:
+    parameters:
+      - $ref: '#/parameters/id'
+    get:
+      responses:
+        200:
+          $ref: '#/responses/UserReadSuccess'
+    put:
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/UserEdit'
+      responses:
+        200:
+          $ref: '#/responses/UserEditSuccess'
+    delete:
+      responses:
+        200:
+          $ref: '#/responses/UserDeleteSuccess'
+
+parameters:
+  limit:
+    name: limit
+    in: query
+    type: integer
+    default: 25
+    minimum: 1
+    maximum: 100
+  skip:
+    name: skip
+    in: query
+    type: integer
+    default: 0
+    minimum: 0
+  id:
+    name: id
+    in: path
+    required: true
+    type: string
+
+responses:
+  HealthSuccess:
+    description: successful response
+    schema:
+      $ref: '#/definitions/HealthSuccess'
+  UserListSuccess:
+    description: successful response
+    headers:
+      'Item-Count':
+        type: integer
+    schema:
+      $ref: '#/definitions/UserList'
+  UserCreateSuccess:
+    description: successful creation
+    schema:
+      $ref: '#/definitions/UserRead'
+  UserReadSuccess:
+    description: successful read
+    schema:
+      $ref: '#/definitions/UserRead'
+  UserEditSuccess:
+    description: successful edit
+    schema:
+      $ref: '#/definitions/UserRead'
+  UserDeleteSuccess:
+    description: successful delete
+    schema:
+      $ref: '#/definitions/UserRead'
+
+definitions:
+  HealthSuccess:
+    properties:
+      success:
+        type: string
+  UserList:
+    type: array
+    items:
+      $ref: '#/definitions/UserRead'
+  UserRead:
+    properties:
+      username:
+        type: string
+      createdAt:
+        type: number
+      updatedAt:
+        type: number
+  UserCreate:
+    additionalProperties: false
+    required:
+      - username
+      - password
+    properties:
+      username:
+        type: string
+      password:
+        type: string
+  UserEdit:
+    additionalProperties: false
+    properties:
+      username:
+        type: string

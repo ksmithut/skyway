@@ -1,0 +1,41 @@
+swagger: '2.0'
+info:
+  title: 'parsing'
+  version: '0.0.0'
+consumes:
+  - application/json
+paths:
+  /users:
+    post:
+      parameters:
+        - name: body
+          in: body
+          schema:
+            required:
+              - username
+              - password
+            properties:
+              username:
+                type: string
+              password:
+                type: string
+      responses:
+        200:
+          description: success
+    put:
+      consumes: []
+      parameters:
+        - name: body
+          in: body
+          schema:
+            required:
+              - username
+              - password
+            properties:
+              username:
+                type: string
+              password:
+                type: string
+      responses:
+        200:
+          description: success

@@ -1,6 +1,7 @@
-lib/**/*.spec.js
+__tests__
 **/*.md
 fixtures
 coverage
 examples
 test
+.*

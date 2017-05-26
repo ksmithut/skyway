@@ -1,3 +1,0 @@
-lib/**/*.spec.js
-test/**/*.spec.js
---reporter spec
