@@ -2,7 +2,7 @@
 
 const SwaggerParser = require('swagger-parser')
 const routes = require('./routes')
-const docs = require('./docs')
+const docs = require('./docs-output')
 const ui = require('./ui')
 
 const swaggerApi = (pathToDocs, validateOptions) => {
