@@ -28,16 +28,17 @@
     "coverage": "open coverage/lcov-report/index.html"
   },
   "dependencies": {
-    "ajv": "^5.1.4",
+    "ajv": "^5.1.5",
     "bluebird": "^3.5.0",
     "compose-middleware": "^2.2.0",
     "csv-parse": "^1.2.0",
     "debug": "^2.6.8",
     "express": "^4.15.3",
     "http-errors": "^1.6.1",
-    "ramda": "^0.23.0",
+    "mongoose": "^4.10.4",
+    "ramda": "^0.24.0",
     "swagger-parser": "^3.4.1",
-    "swagger-ui-dist": "^3.0.11"
+    "swagger-ui-dist": "^3.0.12"
   },
   "devDependencies": {
     "@types/jest": "^19.2.3",
