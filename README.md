@@ -10,10 +10,6 @@
 An express routing library that leverages swagger (open api) definitions to
 validate incoming and outgoing data.
 
-Note: This is a pre 1.0.0 version. Although I will try hard to keep the API the
-same or similar, I will sacrifice a poor api design in favor of a simpler,
-clearer, and all-together better api.
-
 For information on the swagger api, visit the
 [official site](http://swagger.io/) or the
 [official spec](http://swagger.io/specification/)

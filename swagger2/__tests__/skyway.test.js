@@ -20,9 +20,7 @@ describe('skyway()', () => {
 
   test('returns rejected promise if there is an error in the swagger docs', () => {
     const api = skyway(fixtures('bad.yaml'))
-    return expect(api).rejects.toMatchObject({
-      message: expect.stringMatching(/Additional properties not allowed: foo/)
-    })
+    return expect(api).rejects.toMatchSnapshot()
   })
 
   test('accepts validation options', () => {

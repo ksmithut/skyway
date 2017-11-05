@@ -1,0 +1,8 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`skyway() returns rejected promise if there is an error in the swagger docs 1`] = `
+[SyntaxError: Swagger schema validation failed. 
+  Additional properties not allowed: foo at #/
+ 
+JSON_OBJECT_VALIDATION_FAILED]
+`;
