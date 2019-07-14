@@ -1,5 +1,9 @@
 # skyway
 
+**DEPRECATION NOTICE** This module is no longer supported. I've come around to
+not liking the patterns that this module enforces, and I'm sure other tools
+do things in a much better way.
+
 [![NPM version](https://img.shields.io/npm/v/skyway.svg?style=flat)](https://www.npmjs.org/package/skyway)
 [![Dependency Status](https://img.shields.io/david/ksmithut/skyway.svg?style=flat)](https://david-dm.org/ksmithut/skyway)
 [![Dev Dependency Status](https://img.shields.io/david/dev/ksmithut/skyway.svg?style=flat)](https://david-dm.org/ksmithut/skyway#info=devDependencies&view=table)
@@ -33,11 +37,13 @@ const api = skyway(`${__dirname}/swagger.yaml`)
 
 app.get('/swagger.json', api.docs())
 app.use('/docs', api.ui('/swagger.json'))
-app.use(api.routes({
-  parsers: {
-    'application/json': bodyParser.json()
-  }
-}))
+app.use(
+  api.routes({
+    parsers: {
+      'application/json': bodyParser.json()
+    }
+  })
+)
 app.use(routes)
 
 app.listen(8000)
