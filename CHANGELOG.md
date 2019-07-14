@@ -1,3 +1,8 @@
+# 2.0.0
+
+Updated dependencies to fix vulnerable dependencies, which removed support for
+node < 8. Also marked as deprecated.
+
 # 1.0.2
 
 Renamed a folder from `docs` to `docs-output` so that `yarn` won't remove it in
