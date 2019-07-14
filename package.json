@@ -36,19 +36,19 @@
     "express": "^4.16.2",
     "http-errors": "^1.6.2",
     "mongoose": "^4.13.0",
-    "ramda": "^0.25.0",
+    "ramda": "^0.26.1",
     "swagger-parser": "^3.4.1",
     "swagger-ui-dist": "^3.4.3"
   },
   "devDependencies": {
-    "@types/jest": "^21.1.5",
+    "@types/jest": "^24.0.15",
     "body-parser": "^1.18.2",
     "busboy": "^0.2.14",
     "codeclimate-test-reporter": "^0.5.0",
-    "eslint": "^4.10.0",
-    "jest": "^21.2.1",
-    "standard": "^10.0.3",
-    "supertest": "^3.0.0"
+    "eslint": "^6.0.1",
+    "jest": "^24.8.0",
+    "standard": "^13.0.2",
+    "supertest": "^4.0.2"
   },
   "eslintConfig": {
     "root": true,
