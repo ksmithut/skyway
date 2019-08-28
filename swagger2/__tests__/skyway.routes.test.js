@@ -154,7 +154,7 @@ describe('skyway().routes()', () => {
         const request = createRequest('security.basic-auth.yaml', routesConfig)
         return request
           .get('/health')
-          .set('Authorization', `Basic`)
+          .set('Authorization', 'Basic')
           .expect(401)
           .then(() => {
             return request.get('/health').auth('admin', 'password').expect(200)

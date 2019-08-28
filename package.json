@@ -41,13 +41,13 @@
     "swagger-ui-dist": "^3.4.3"
   },
   "devDependencies": {
-    "@types/jest": "^24.0.15",
+    "@types/jest": "^24.0.18",
     "body-parser": "^1.18.2",
     "busboy": "^0.2.14",
     "codeclimate-test-reporter": "^0.5.0",
-    "eslint": "^6.0.1",
-    "jest": "^24.8.0",
-    "standard": "^13.0.2",
+    "eslint": "^6.2.2",
+    "jest": "^24.9.0",
+    "standard": "^14.0.2",
     "supertest": "^4.0.2"
   },
   "eslintConfig": {

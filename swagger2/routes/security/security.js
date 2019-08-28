@@ -9,13 +9,13 @@ const oauth2Auth = require('./auth/oauth2')
 
 const notImplemented = () => {
   return Promise.reject(
-    createError(501, `Authentication scheme not implemented`)
+    createError(501, 'Authentication scheme not implemented')
   )
 }
 
 const notDefined = () => () => {
   return Promise.reject(
-    createError(501, `Authentication scheme is not defined in schema`)
+    createError(501, 'Authentication scheme is not defined in schema')
   )
 }
 
