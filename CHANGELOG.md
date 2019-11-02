@@ -1,3 +1,7 @@
+# 2.1.0
+
+Updated dependencies to fix vulnerable dependencies
+
 # 2.0.0
 
 Updated dependencies to fix vulnerable dependencies, which removed support for
